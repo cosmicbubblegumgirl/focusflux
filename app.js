@@ -1,4 +1,5 @@
 const DB_KEY = "focusflux-db-v1";
+const THEME_KEY = "focusflux-theme";
 
 const stateOptions = [
   "Foggy",
@@ -119,6 +120,10 @@ const playerSeedTracks = [
 
 const dom = {
   authButton: document.querySelector("#authButton"),
+  themeButton: document.querySelector("#themeButton"),
+  themeIcon: document.querySelector("#themeIcon"),
+  moxieTopButton: document.querySelector("#moxieTopButton"),
+  moxieFabButton: document.querySelector("#moxieFabButton"),
   authDialog: document.querySelector("#authDialog"),
   authForm: document.querySelector("#authForm"),
   authTitle: document.querySelector("#authTitle"),
@@ -276,6 +281,44 @@ function makeId() {
     return crypto.randomUUID();
   }
   return `ff-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function getSavedTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  if (saved === "light" || saved === "dark") {
+    return saved;
+  }
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+function applyTheme(theme) {
+  const isDark = theme === "dark";
+  document.body.classList.toggle("theme-dark", isDark);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#08110f" : "#12231f");
+  dom.themeButton.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+  dom.themeIcon.setAttribute(
+    "d",
+    isDark
+      ? "M12 3v2M12 19v2M5.6 5.6 7 7M17 17l1.4 1.4M3 12h2M19 12h2M5.6 18.4 7 17M17 7l1.4-1.4M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
+      : "M12 3a6 6 0 0 0 9 7.3A9 9 0 1 1 12 3Z",
+  );
+}
+
+function toggleTheme() {
+  const nextTheme = document.body.classList.contains("theme-dark") ? "light" : "dark";
+  localStorage.setItem(THEME_KEY, nextTheme);
+  applyTheme(nextTheme);
+}
+
+function openMoxieCoach() {
+  const panel = document.querySelector(".moxie-panel");
+  if (!panel) {
+    return;
+  }
+  panel.scrollIntoView({ behavior: "smooth", block: "center" });
+  panel.classList.remove("is-highlighted");
+  window.requestAnimationFrame(() => panel.classList.add("is-highlighted"));
+  window.setTimeout(() => dom.moxieInput.focus(), 420);
 }
 
 function getActiveUser() {
@@ -1729,6 +1772,9 @@ function handleCoachChoice(event) {
 
 function bindEvents() {
   dom.authButton.addEventListener("click", handleAuthButton);
+  dom.themeButton.addEventListener("click", toggleTheme);
+  dom.moxieTopButton.addEventListener("click", openMoxieCoach);
+  dom.moxieFabButton.addEventListener("click", openMoxieCoach);
   dom.closeAuthButton.addEventListener("click", closeAuth);
   dom.switchAuthButton.addEventListener("click", () => {
     setAuthMode(authMode === "login" ? "create" : "login");
@@ -1807,6 +1853,7 @@ function bindEvents() {
 }
 
 function init() {
+  applyTheme(getSavedTheme());
   renderOptions();
   renderRooms();
   renderToneControls();
