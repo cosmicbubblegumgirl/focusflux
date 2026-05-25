@@ -1,0 +1,18 @@
+{
+  "name": "FocusFlux",
+  "short_name": "FocusFlux",
+  "description": "An adaptive focus system for ADHD brains.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4eb",
+  "theme_color": "#12231f",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

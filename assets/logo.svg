@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 144" role="img" aria-labelledby="title desc">
+  <title id="title">FocusFlux logo</title>
+  <desc id="desc">FocusFlux wordmark with a focus wave lightning mark.</desc>
+  <defs>
+    <linearGradient id="markGradient" x1="12" y1="12" x2="132" y2="132" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2f8f82"/>
+      <stop offset="0.48" stop-color="#f2b84b"/>
+      <stop offset="1" stop-color="#f26f5e"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="10" width="124" height="124" rx="32" fill="#fffdf6"/>
+  <path d="M24 82c18-34 39-34 64 0s43 34 61 0" fill="none" stroke="url(#markGradient)" stroke-width="16" stroke-linecap="round"/>
+  <path d="M27 57c18-22 38-22 61 0s42 22 58 0" fill="none" stroke="#13211e" stroke-width="7" stroke-linecap="round" opacity=".82"/>
+  <path d="M68 28h42L82 67h25l-52 53 12-40H44L68 28Z" fill="#13211e"/>
+  <path d="M76 40h15L70 70h19L70 91l4-21H60L76 40Z" fill="#fffdf6"/>
+  <text x="154" y="74" fill="#13211e" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="48" font-weight="850" letter-spacing="0">FocusFlux</text>
+  <text x="157" y="104" fill="#64736f" font-family="Inter, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="0">Adaptive focus for ADHD brains</text>
+</svg>
