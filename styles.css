@@ -37,6 +37,18 @@ body {
   color: var(--ink);
 }
 
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(rgba(19, 33, 30, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(19, 33, 30, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.75), transparent 82%);
+  content: "";
+}
+
 button,
 input,
 textarea,
@@ -134,6 +146,12 @@ select:focus-visible {
   border-radius: var(--radius);
   background: rgba(255, 253, 246, 0.9);
   box-shadow: var(--shadow);
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.panel:hover {
+  border-color: rgba(47, 143, 130, 0.2);
+  box-shadow: 0 26px 72px rgba(31, 43, 39, 0.16);
 }
 
 .focus-panel,
@@ -311,6 +329,180 @@ h3 {
 
 .pulse-orb.is-running .wave-three {
   animation: waveSlide 6.8s ease-in-out infinite;
+}
+
+.embedded-player {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(19, 33, 30, 0.12);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, rgba(19, 33, 30, 0.96), rgba(27, 55, 49, 0.94)),
+    #13211e;
+  color: #fffdf6;
+  box-shadow: 0 22px 44px rgba(19, 33, 30, 0.22);
+}
+
+.player-visual {
+  position: relative;
+  min-height: 146px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(242, 184, 75, 0.22), transparent 34%),
+    radial-gradient(circle at 86% 18%, rgba(84, 119, 216, 0.22), transparent 32%),
+    linear-gradient(90deg, rgba(47, 143, 130, 0.22), transparent);
+}
+
+.player-visual canvas {
+  display: block;
+  width: 100%;
+  height: 160px;
+}
+
+.player-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255, 253, 246, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 253, 246, 0.09);
+  color: rgba(255, 253, 246, 0.84);
+  font-size: 0.72rem;
+  font-weight: 850;
+  backdrop-filter: blur(10px);
+}
+
+.player-body {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.player-track span,
+.mini-select span,
+.mini-range span {
+  display: block;
+  color: rgba(255, 253, 246, 0.64);
+  font-size: 0.72rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.player-track h2 {
+  margin: 4px 0;
+  font-size: 1.2rem;
+}
+
+.player-track p {
+  margin: 0;
+  color: rgba(255, 253, 246, 0.72);
+  font-size: 0.88rem;
+}
+
+.player-progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 253, 246, 0.12);
+}
+
+.player-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--teal), var(--amber), var(--coral));
+  transition: width 220ms linear;
+}
+
+.player-controls {
+  display: grid;
+  align-items: end;
+  gap: 9px;
+  grid-template-columns: 42px 54px 42px minmax(112px, 1fr) minmax(112px, 1fr);
+}
+
+.player-controls .icon-button {
+  border-color: rgba(255, 253, 246, 0.18);
+  background: rgba(255, 253, 246, 0.08);
+  color: #fffdf6;
+}
+
+.player-play {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fffdf6;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(242, 184, 75, 0.24);
+}
+
+.player-play svg {
+  width: 22px;
+  height: 22px;
+}
+
+#playerPlayIcon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.mini-select,
+.mini-range {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.mini-select select {
+  min-height: 38px;
+  border-color: rgba(255, 253, 246, 0.16);
+  background: rgba(255, 253, 246, 0.1);
+  color: #fffdf6;
+}
+
+.mini-select option {
+  color: var(--ink);
+}
+
+.mini-range input {
+  height: 38px;
+  padding: 0;
+  accent-color: var(--amber);
+}
+
+.player-queue {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.player-queue button {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 253, 246, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 253, 246, 0.08);
+  color: rgba(255, 253, 246, 0.82);
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.player-queue button[aria-pressed="true"] {
+  border-color: rgba(242, 184, 75, 0.7);
+  background: rgba(242, 184, 75, 0.2);
+  color: #fffdf6;
 }
 
 .next-action,
@@ -498,6 +690,158 @@ svg path {
   border-top: 1px solid rgba(19, 33, 30, 0.1);
 }
 
+.checklist-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(19, 33, 30, 0.1);
+}
+
+.checklist-meter {
+  --progress: 0deg;
+  display: grid;
+  width: 116px;
+  aspect-ratio: 1;
+  place-items: center;
+  justify-self: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--panel) 0 54%, transparent 55%),
+    conic-gradient(var(--teal) var(--progress), rgba(19, 33, 30, 0.1) 0);
+  box-shadow: inset 0 0 0 1px rgba(19, 33, 30, 0.09), 0 14px 28px rgba(31, 43, 39, 0.12);
+  transition: background 280ms ease, transform 220ms ease;
+}
+
+.checklist-meter.is-pulsing {
+  animation: meterPop 520ms ease;
+}
+
+.checklist-meter div {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.checklist-meter strong {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.checklist-meter span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.checklist-form {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 42px;
+}
+
+.checklist-list {
+  display: grid;
+  min-height: 80px;
+  max-height: 270px;
+  gap: 8px;
+  margin: 0;
+  overflow: auto;
+  padding: 0;
+  list-style: none;
+}
+
+.checklist-item {
+  display: grid;
+  align-items: center;
+  gap: 9px;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  padding: 8px;
+  border: 1px solid rgba(19, 33, 30, 0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.58);
+  animation: itemSlideIn 260ms ease both;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+}
+
+.checklist-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(47, 143, 130, 0.28);
+}
+
+.checklist-item.is-done {
+  background: rgba(111, 191, 115, 0.16);
+}
+
+.check-toggle,
+.check-remove {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(19, 33, 30, 0.12);
+  border-radius: 50%;
+  background: #fffdf6;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.check-toggle span {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.checklist-item.is-done .check-toggle {
+  background: var(--green);
+  color: #fffdf6;
+}
+
+.checklist-item.is-done .check-toggle span {
+  transform: scale(0.72);
+  background: currentColor;
+}
+
+.check-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.checklist-item.is-done .check-text {
+  color: #2e6a3a;
+  text-decoration: line-through;
+}
+
+.check-remove {
+  border-radius: var(--radius);
+  color: var(--muted);
+}
+
+.check-remove svg {
+  width: 16px;
+  height: 16px;
+}
+
+.checklist-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.checklist-empty {
+  padding: 14px;
+  border: 1px dashed rgba(19, 33, 30, 0.18);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-weight: 800;
+  text-align: center;
+}
+
 fieldset {
   min-width: 0;
   margin: 0;
@@ -606,9 +950,108 @@ select {
 
 .room-panel,
 .fidget-panel,
+.moxie-panel,
+.tone-panel,
 .fingerprint-panel {
   display: grid;
   gap: 12px;
+}
+
+.moxie-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.moxie-panel::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(242, 184, 75, 0.16), transparent 30%),
+    radial-gradient(circle at 92% 4%, rgba(47, 143, 130, 0.14), transparent 34%);
+  content: "";
+}
+
+.moxie-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.moxie-orbit {
+  position: relative;
+  display: grid;
+  width: 96px;
+  aspect-ratio: 1;
+  place-items: center;
+  justify-self: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 253, 246, 0.94) 0 36%, transparent 37%),
+    conic-gradient(var(--blue), var(--teal), var(--amber), var(--coral), var(--blue));
+  box-shadow: 0 16px 28px rgba(31, 43, 39, 0.14);
+}
+
+.moxie-orbit span {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+  animation: orbitDot 4s linear infinite;
+  transform-origin: 0 48px;
+}
+
+.moxie-orbit span:nth-child(2) {
+  animation-delay: -1.33s;
+  background: var(--teal-dark);
+}
+
+.moxie-orbit span:nth-child(3) {
+  animation-delay: -2.66s;
+  background: var(--coral);
+}
+
+.moxie-messages {
+  display: grid;
+  max-height: 190px;
+  gap: 8px;
+  overflow: auto;
+}
+
+.moxie-message {
+  margin: 0;
+  padding: 10px 11px;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1.42;
+  animation: itemSlideIn 220ms ease both;
+}
+
+.moxie-message.is-coach {
+  background: rgba(84, 119, 216, 0.12);
+  color: #263f8c;
+}
+
+.moxie-message.is-user {
+  justify-self: end;
+  max-width: 88%;
+  background: rgba(47, 143, 130, 0.14);
+  color: var(--teal-dark);
+}
+
+.moxie-quick,
+.moxie-form {
+  display: grid;
+  gap: 8px;
+}
+
+.moxie-quick {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.moxie-form {
+  grid-template-columns: minmax(0, 1fr) 42px;
 }
 
 .room-actions {
@@ -654,6 +1097,50 @@ select {
 
 .fidget-pad.is-tapped span {
   animation: spinTap 560ms ease;
+}
+
+.tone-grid,
+.tone-actions {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tone-card {
+  display: grid;
+  min-height: 138px;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid rgba(19, 33, 30, 0.1);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.54);
+}
+
+.tone-card strong {
+  display: block;
+  line-height: 1.2;
+}
+
+.tone-card p {
+  margin-bottom: 0;
+  color: #30423e;
+  font-size: 0.9rem;
+  line-height: 1.42;
+}
+
+.tone-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tone-tags span {
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: rgba(84, 119, 216, 0.12);
+  color: #324b99;
+  font-size: 0.72rem;
+  font-weight: 850;
 }
 
 .fidget-row,
@@ -851,6 +1338,15 @@ code {
   .timer-actions {
     justify-content: space-between;
   }
+
+  .player-controls {
+    grid-template-columns: 42px 54px 42px;
+  }
+
+  .mini-select,
+  .mini-range {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 440px) {
@@ -870,7 +1366,9 @@ code {
 
   .chip-grid,
   .task-grid,
-  .room-actions {
+  .room-actions,
+  .tone-grid,
+  .tone-actions {
     grid-template-columns: 1fr;
   }
 }

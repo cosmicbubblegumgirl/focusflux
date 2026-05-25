@@ -35,6 +35,88 @@ const rooms = [
   "I'm avoiding something",
 ];
 
+const toneModes = [
+  "Ignition",
+  "Lock-in",
+  "Drift Recovery",
+  "Reward",
+  "Cooldown",
+  "Start Mode",
+  "Flow Mode",
+  "Chaos Mode",
+  "Body Mode",
+  "Deadline Mode",
+];
+
+const toneFeelings = [
+  "Foggy",
+  "Restless",
+  "Avoiding",
+  "Overwhelmed",
+  "Hyperfocused",
+  "Tired",
+  "Anxious",
+  "Ready",
+  "Understimulated",
+  "Overstimulated",
+  "Bored",
+  "Pressured",
+  "Scattered",
+  "Tender",
+  "Stuck",
+  "Curious",
+  "Numb",
+  "Wired",
+  "Slow",
+  "Steady",
+];
+
+const tonePhases = ["spark", "thread", "anchor", "return", "landing"];
+
+const toneModeProfiles = {
+  Ignition: { bpm: [92, 112], energy: 7, motion: "rhythmic", vocals: "none", load: "medium" },
+  "Lock-in": { bpm: [58, 78], energy: 4, motion: "repetitive", vocals: "none", load: "low" },
+  "Drift Recovery": { bpm: [70, 88], energy: 5, motion: "clear pulse", vocals: "minimal", load: "low" },
+  Reward: { bpm: [96, 122], energy: 8, motion: "short lift", vocals: "chops only", load: "medium" },
+  Cooldown: { bpm: [48, 66], energy: 2, motion: "slow decay", vocals: "none", load: "low" },
+  "Start Mode": { bpm: [82, 104], energy: 6, motion: "forward", vocals: "none", load: "medium" },
+  "Flow Mode": { bpm: [56, 74], energy: 3, motion: "stable", vocals: "none", load: "low" },
+  "Chaos Mode": { bpm: [62, 84], energy: 4, motion: "simple", vocals: "none", load: "very low" },
+  "Body Mode": { bpm: [100, 128], energy: 7, motion: "movement", vocals: "minimal", load: "medium" },
+  "Deadline Mode": { bpm: [88, 116], energy: 8, motion: "countdown", vocals: "none", load: "medium" },
+};
+
+const feelingProfiles = {
+  Foggy: { offset: 8, texture: "bright, crisp transients", tag: "light percussion" },
+  Restless: { offset: 10, texture: "steady motor rhythm", tag: "driving beat" },
+  Avoiding: { offset: -2, texture: "low-friction minimal loop", tag: "minimal electronic" },
+  Overwhelmed: { offset: -8, texture: "soft edges, sparse layers", tag: "ambient calm" },
+  Hyperfocused: { offset: -6, texture: "narrow-band stable bed", tag: "deep focus" },
+  Tired: { offset: -10, texture: "warm low arousal", tag: "soft ambient" },
+  Anxious: { offset: -6, texture: "predictable pulse, no surprises", tag: "calm tension" },
+  Ready: { offset: 0, texture: "balanced momentum", tag: "focus beat" },
+  Understimulated: { offset: 12, texture: "clean novelty every 16 bars", tag: "uplifting electronic" },
+  Overstimulated: { offset: -12, texture: "low spectral density", tag: "meditative" },
+  Bored: { offset: 10, texture: "playful but non-lyrical", tag: "quirky pulse" },
+  Pressured: { offset: 6, texture: "firm pulse, simple harmony", tag: "determined" },
+  Scattered: { offset: -4, texture: "single motif, few scene changes", tag: "minimal pulse" },
+  Tender: { offset: -8, texture: "soft consonant pads", tag: "gentle piano" },
+  Stuck: { offset: 4, texture: "small rising movement", tag: "building focus" },
+  Curious: { offset: 2, texture: "subtle detail without vocals", tag: "curious electronic" },
+  Numb: { offset: 6, texture: "warm pulse with tactile lows", tag: "warm beat" },
+  Wired: { offset: -10, texture: "steady downshift groove", tag: "slow pulse" },
+  Slow: { offset: 8, texture: "brighter attack and clear grid", tag: "light groove" },
+  Steady: { offset: 0, texture: "consistent loop architecture", tag: "steady rhythm" },
+};
+
+const playerSeedTracks = [
+  { mode: "Ignition", feeling: "Ready", title: "Ready Spark" },
+  { mode: "Lock-in", feeling: "Hyperfocused", title: "Threadline Loop" },
+  { mode: "Drift Recovery", feeling: "Scattered", title: "Return Cue" },
+  { mode: "Reward", feeling: "Stuck", title: "Tiny Win Lift" },
+  { mode: "Cooldown", feeling: "Tired", title: "Soft Landing" },
+];
+
 const dom = {
   authButton: document.querySelector("#authButton"),
   authDialog: document.querySelector("#authDialog"),
@@ -65,19 +147,47 @@ const dom = {
   startTimerButton: document.querySelector("#startTimerButton"),
   resetTimerButton: document.querySelector("#resetTimerButton"),
   soundButton: document.querySelector("#soundButton"),
+  playerCanvas: document.querySelector("#playerCanvas"),
+  playerPhaseLabel: document.querySelector("#playerPhaseLabel"),
+  playerTitle: document.querySelector("#playerTitle"),
+  playerTrackMeta: document.querySelector("#playerTrackMeta"),
+  playerProgressBar: document.querySelector("#playerProgressBar"),
+  playerPrevButton: document.querySelector("#playerPrevButton"),
+  playerPlayButton: document.querySelector("#playerPlayButton"),
+  playerNextButton: document.querySelector("#playerNextButton"),
+  playerPlayIcon: document.querySelector("#playerPlayIcon"),
+  playerPhaseSelect: document.querySelector("#playerPhaseSelect"),
+  playerIntensityRange: document.querySelector("#playerIntensityRange"),
+  playerQueue: document.querySelector("#playerQueue"),
   driftButton: document.querySelector("#driftButton"),
   breadcrumbStack: document.querySelector("#breadcrumbStack"),
   stepsList: document.querySelector("#stepsList"),
   completeStepButton: document.querySelector("#completeStepButton"),
   shuffleStepsButton: document.querySelector("#shuffleStepsButton"),
+  checklistProgressText: document.querySelector("#checklistProgressText"),
+  checklistMeter: document.querySelector("#checklistMeter"),
+  checklistDoneCount: document.querySelector("#checklistDoneCount"),
+  checklistForm: document.querySelector("#checklistForm"),
+  checklistInput: document.querySelector("#checklistInput"),
+  checklistList: document.querySelector("#checklistList"),
+  checklistSyncButton: document.querySelector("#checklistSyncButton"),
+  checklistClearButton: document.querySelector("#checklistClearButton"),
   coachCopy: document.querySelector("#coachCopy"),
   nudgeLevel: document.querySelector("#nudgeLevel"),
+  moxieMessages: document.querySelector("#moxieMessages"),
+  moxieForm: document.querySelector("#moxieForm"),
+  moxieInput: document.querySelector("#moxieInput"),
   roomSelect: document.querySelector("#roomSelect"),
   roomCount: document.querySelector("#roomCount"),
   joinRoomButton: document.querySelector("#joinRoomButton"),
   signalLog: document.querySelector("#signalLog"),
   fidgetPad: document.querySelector("#fidgetPad"),
   syncScore: document.querySelector("#syncScore"),
+  toneModeSelect: document.querySelector("#toneModeSelect"),
+  toneFeelingSelect: document.querySelector("#toneFeelingSelect"),
+  tonePreview: document.querySelector("#tonePreview"),
+  previewToneButton: document.querySelector("#previewToneButton"),
+  exportToneButton: document.querySelector("#exportToneButton"),
   fingerprintGrid: document.querySelector("#fingerprintGrid"),
   savedCount: document.querySelector("#savedCount"),
   openDataButton: document.querySelector("#openDataButton"),
@@ -99,6 +209,11 @@ let currentRoom = rooms[0];
 let timerId = null;
 let lastTapAt = 0;
 let fidgetScore = 0;
+let checklistItems = db.checklist || [];
+let playerTracks = [];
+let playerIndex = 0;
+let playerProgress = 0;
+let playerAnimationId = null;
 
 let session = {
   id: makeId(),
@@ -124,18 +239,20 @@ function loadDatabase() {
   try {
     const stored = localStorage.getItem(DB_KEY);
     if (!stored) {
-      return {
-        version: 1,
-        activeUserId: null,
-        users: {},
-        updatedAt: new Date().toISOString(),
-      };
+    return {
+      version: 1,
+      activeUserId: null,
+      users: {},
+      checklist: [],
+      updatedAt: new Date().toISOString(),
+    };
     }
     const parsed = JSON.parse(stored);
     return {
       version: 1,
       activeUserId: parsed.activeUserId || null,
       users: parsed.users || {},
+      checklist: parsed.checklist || [],
       updatedAt: parsed.updatedAt || new Date().toISOString(),
     };
   } catch {
@@ -143,6 +260,7 @@ function loadDatabase() {
       version: 1,
       activeUserId: null,
       users: {},
+      checklist: [],
       updatedAt: new Date().toISOString(),
     };
   }
@@ -475,6 +593,10 @@ function generatePulse() {
   addBreadcrumb("You named the thing.");
   renderPulse();
   renderSteps();
+  syncChecklistFromSteps(true);
+  buildPlayerQueue();
+  renderPlayer();
+  addMoxieMessage("coach", getMoxieReply("pulse"));
   renderTimer();
   renderFingerprint();
   applyAudioSettings();
@@ -525,6 +647,138 @@ function renderSteps() {
   );
   dom.completeStepButton.disabled = currentSteps.length === 0;
   dom.nextActionText.textContent = currentSteps[currentStepIndex] || "Stop now or choose a short continuation.";
+}
+
+function makeChecklistItem(text, done = false) {
+  return {
+    id: makeId(),
+    text,
+    done,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function syncChecklistFromSteps(replace = false) {
+  if (!currentSteps.length) {
+    return;
+  }
+  if (replace || checklistItems.length === 0) {
+    checklistItems = currentSteps.map((step, index) => makeChecklistItem(step, index < currentStepIndex));
+  } else {
+    const existing = new Set(checklistItems.map((item) => item.text));
+    currentSteps.forEach((step) => {
+      if (!existing.has(step)) {
+        checklistItems.push(makeChecklistItem(step));
+      }
+    });
+  }
+  persistChecklist();
+  renderChecklist();
+}
+
+function persistChecklist() {
+  db.checklist = checklistItems.slice(0, 60);
+  const user = getActiveUser();
+  if (user) {
+    user.checklist = db.checklist;
+  }
+  saveDatabase();
+}
+
+function renderChecklist() {
+  const doneCount = checklistItems.filter((item) => item.done).length;
+  const total = checklistItems.length || 1;
+  const percent = Math.round((doneCount / total) * 100);
+  dom.checklistProgressText.textContent = `${percent}%`;
+  dom.checklistDoneCount.textContent = doneCount;
+  dom.checklistMeter.style.setProperty("--progress", `${percent * 3.6}deg`);
+
+  if (!checklistItems.length) {
+    const empty = document.createElement("li");
+    empty.className = "checklist-empty";
+    empty.textContent = "Add one tiny step or sync from Flux Fracture.";
+    dom.checklistList.replaceChildren(empty);
+    return;
+  }
+
+  dom.checklistList.replaceChildren(
+    ...checklistItems.map((item) => {
+      const li = document.createElement("li");
+      li.className = "checklist-item";
+      li.classList.toggle("is-done", item.done);
+
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.className = "check-toggle";
+      toggle.setAttribute("aria-label", item.done ? "Mark incomplete" : "Mark complete");
+      toggle.innerHTML = "<span></span>";
+      toggle.addEventListener("click", () => toggleChecklistItem(item.id));
+
+      const text = document.createElement("span");
+      text.className = "check-text";
+      text.textContent = item.text;
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "check-remove";
+      remove.setAttribute("aria-label", "Remove checklist item");
+      remove.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>';
+      remove.addEventListener("click", () => removeChecklistItem(item.id));
+
+      li.append(toggle, text, remove);
+      return li;
+    }),
+  );
+}
+
+function toggleChecklistItem(id) {
+  const item = checklistItems.find((entry) => entry.id === id);
+  if (!item) {
+    return;
+  }
+  item.done = !item.done;
+  if (item.done) {
+    addBreadcrumb("You sparked a checklist step.");
+    playRewardSound();
+    dom.checklistMeter.classList.remove("is-pulsing");
+    window.requestAnimationFrame(() => dom.checklistMeter.classList.add("is-pulsing"));
+    addMoxieMessage("coach", "Moxie: Nice. That is evidence, not vibes. Want the next step smaller or steady?");
+  }
+  persistChecklist();
+  renderChecklist();
+}
+
+function markChecklistIndexDone(index) {
+  const item = checklistItems[index];
+  if (!item || item.done) {
+    return;
+  }
+  item.done = true;
+  persistChecklist();
+  renderChecklist();
+}
+
+function addChecklistItem(text) {
+  const cleaned = text.trim();
+  if (!cleaned) {
+    return;
+  }
+  checklistItems.unshift(makeChecklistItem(cleaned));
+  persistChecklist();
+  renderChecklist();
+  addMoxieMessage("coach", "Moxie: Good. Keep it visible, keep it small, keep the exit easy.");
+}
+
+function removeChecklistItem(id) {
+  checklistItems = checklistItems.filter((item) => item.id !== id);
+  persistChecklist();
+  renderChecklist();
+}
+
+function clearDoneChecklistItems() {
+  checklistItems = checklistItems.filter((item) => !item.done);
+  persistChecklist();
+  renderChecklist();
 }
 
 function renderTimer() {
@@ -646,6 +900,7 @@ function completeVisibleStep() {
   }
   currentStepIndex += 1;
   session.completedSteps += 1;
+  markChecklistIndexDone(currentStepIndex - 1);
   addBreadcrumb(getStepReward(session.completedSteps));
   playRewardSound();
   if (currentStepIndex >= currentSteps.length) {
@@ -764,6 +1019,371 @@ function tapFidget(type = "tap") {
   window.requestAnimationFrame(() => dom.fidgetPad.classList.add("is-tapped"));
   if (navigator.vibrate) {
     navigator.vibrate(type === "hold" ? [35, 30, 35] : 24);
+  }
+}
+
+function buildToneMap(modeName, feelingName, index = 0, includeSlots = false) {
+  const modeProfile = toneModeProfiles[modeName] || toneModeProfiles["Flow Mode"];
+  const feelingProfile = feelingProfiles[feelingName] || feelingProfiles.Ready;
+  const phase = tonePhases[index % tonePhases.length];
+  const low = modeProfile.bpm[0] + feelingProfile.offset;
+  const high = modeProfile.bpm[1] + feelingProfile.offset;
+  const bpmTarget = Math.max(42, Math.min(132, Math.round((low + high) / 2 + (index % 7) - 3)));
+  const energyTarget = Math.max(1, Math.min(10, modeProfile.energy + ((index % 5) - 2)));
+  const sensoryLoad = modeProfile.load;
+  const tags = [
+    feelingProfile.tag,
+    modeProfile.motion,
+    `${sensoryLoad} sensory load`,
+    `${modeProfile.vocals} vocals`,
+    phase,
+  ];
+  const map = {
+    id: `fluxtone-${String(index + 1).padStart(4, "0")}`,
+    title: `${feelingName} ${modeName} ${phase}`,
+    mode: modeName,
+    feeling: feelingName,
+    phase,
+    bpmRange: [Math.max(42, low), Math.min(140, high)],
+    bpmTarget,
+    energyTarget,
+    vocalDensity: modeProfile.vocals,
+    sensoryLoad,
+    texture: feelingProfile.texture,
+    scienceCue:
+      "Designed for predictable rhythm, low lyric interference, controlled novelty, and phase-based arousal regulation.",
+    epidemicSearchTags: tags,
+    trackSlotCount: 100,
+  };
+
+  if (includeSlots) {
+    map.trackSlots = Array.from({ length: 100 }, (_, slotIndex) => ({
+      slot: slotIndex + 1,
+      targetBpm: Math.max(42, Math.min(140, bpmTarget + ((slotIndex % 9) - 4))),
+      energyTarget: Math.max(1, Math.min(10, energyTarget + ((slotIndex % 3) - 1))),
+      textureTarget: slotIndex % 4 === 0 ? `${feelingProfile.texture}; subtle transition` : feelingProfile.texture,
+      searchTags: tags,
+      licensingNote: "Fill with an approved, licensed track from Epidemic Sound or another licensed library.",
+    }));
+  }
+
+  return map;
+}
+
+function generateToneAtlas() {
+  return Array.from({ length: 1000 }, (_, index) => {
+    const modeName = toneModes[index % toneModes.length];
+    const feelingName = toneFeelings[Math.floor(index / toneModes.length) % toneFeelings.length];
+    return buildToneMap(modeName, feelingName, index, true);
+  });
+}
+
+function renderToneControls() {
+  dom.toneModeSelect.replaceChildren(
+    ...toneModes.map((modeName) => {
+      const option = document.createElement("option");
+      option.value = modeName;
+      option.textContent = modeName;
+      return option;
+    }),
+  );
+  dom.toneFeelingSelect.replaceChildren(
+    ...toneFeelings.map((feelingName) => {
+      const option = document.createElement("option");
+      option.value = feelingName;
+      option.textContent = feelingName;
+      return option;
+    }),
+  );
+  dom.toneModeSelect.value = "Flow Mode";
+  dom.toneFeelingSelect.value = "Ready";
+  renderTonePreview();
+}
+
+function renderTonePreview() {
+  const map = buildToneMap(dom.toneModeSelect.value, dom.toneFeelingSelect.value, 0, false);
+  dom.tonePreview.innerHTML = `
+    <strong>${map.title}</strong>
+    <p>${map.bpmRange[0]}-${map.bpmRange[1]} BPM · energy ${map.energyTarget}/10 · ${map.texture}</p>
+    <div class="tone-tags">${map.epidemicSearchTags.map((tag) => `<span>${tag}</span>`).join("")}</div>
+  `;
+}
+
+function exportToneAtlas() {
+  const atlas = {
+    product: "FocusFlux",
+    feature: "FluxTone Atlas",
+    playlistCount: 1000,
+    slotsPerPlaylist: 100,
+    generatedAt: new Date().toISOString(),
+    licensing: "Playlist maps only. Add tracks you are licensed to use.",
+    playlists: generateToneAtlas(),
+  };
+  const blob = new Blob([JSON.stringify(atlas, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = "focusflux-fluxtone-atlas.json";
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function buildPlayerQueue() {
+  const pulseMode = currentPulse ? currentPulse.mode : "Start Mode";
+  const pulseFeeling = currentPulse ? currentPulse.state : "Ready";
+  playerTracks = [
+    buildToneMap("Ignition", pulseFeeling, 0, false),
+    buildToneMap(pulseMode, pulseFeeling, 1, false),
+    buildToneMap("Drift Recovery", pulseFeeling === "Ready" ? "Scattered" : pulseFeeling, 2, false),
+    buildToneMap("Reward", pulseFeeling, 3, false),
+    buildToneMap("Cooldown", pulseFeeling, 4, false),
+    ...playerSeedTracks.map((track, index) => ({
+      ...buildToneMap(track.mode, track.feeling, index + 5, false),
+      title: `FluxTone: ${track.title}`,
+    })),
+  ];
+  playerIndex = Math.min(playerIndex, playerTracks.length - 1);
+}
+
+function renderPlayer() {
+  if (!playerTracks.length) {
+    buildPlayerQueue();
+  }
+  const track = playerTracks[playerIndex];
+  dom.playerPhaseLabel.textContent = track.mode;
+  dom.playerTitle.textContent = track.title.startsWith("FluxTone") ? track.title : `FluxTone: ${track.title}`;
+  dom.playerTrackMeta.textContent = `${track.bpmTarget} BPM · energy ${track.energyTarget}/10 · ${track.vocalDensity} vocals`;
+  dom.playerPhaseSelect.value = toneModeProfiles[track.mode] ? track.mode : "Ignition";
+  dom.playerPlayIcon.setAttribute(
+    "d",
+    audio.playing ? "M7 5h4v14H7zM13 5h4v14h-4z" : "M8 5v14l11-7Z",
+  );
+  dom.playerProgressBar.style.width = `${Math.round(playerProgress * 100)}%`;
+  dom.playerQueue.replaceChildren(
+    ...playerTracks.map((item, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = item.phase;
+      button.setAttribute("aria-pressed", String(index === playerIndex));
+      button.addEventListener("click", () => {
+        playerIndex = index;
+        playerProgress = 0;
+        renderPlayer();
+        applyAudioSettings();
+      });
+      return button;
+    }),
+  );
+}
+
+function setAudioPlaying(playing) {
+  setupAudio();
+  if (!audio.context) {
+    return;
+  }
+  if (audio.context.state === "suspended") {
+    audio.context.resume();
+  }
+  audio.playing = playing;
+  audio.master.gain.setTargetAtTime(audio.playing ? 0.05 : 0.0001, audio.context.currentTime, 0.03);
+  dom.soundButton.classList.toggle("is-on", audio.playing);
+  renderPlayer();
+  applyAudioSettings();
+}
+
+function previousPlayerTrack() {
+  playerIndex = (playerIndex - 1 + playerTracks.length) % playerTracks.length;
+  playerProgress = 0;
+  renderPlayer();
+  applyAudioSettings();
+}
+
+function nextPlayerTrack() {
+  playerIndex = (playerIndex + 1) % playerTracks.length;
+  playerProgress = 0;
+  renderPlayer();
+  applyAudioSettings();
+}
+
+function setPlayerPhase(modeName) {
+  const feeling = currentPulse ? currentPulse.state : selectedState;
+  playerTracks[playerIndex] = buildToneMap(modeName, feeling, playerIndex, false);
+  session.phase = modeName === "Drift Recovery" ? "Drift recovery" : modeName;
+  playerProgress = 0;
+  renderPlayer();
+  renderTimer();
+  applyAudioSettings();
+}
+
+function drawPlayerVisualizer() {
+  const canvas = dom.playerCanvas;
+  if (!canvas) {
+    return;
+  }
+  const context = canvas.getContext("2d");
+  const width = canvas.width;
+  const height = canvas.height;
+  const track = playerTracks[playerIndex] || buildToneMap("Ignition", "Ready", 0, false);
+  const time = performance.now() / 1000;
+  if (audio.playing) {
+    playerProgress = (playerProgress + 0.0024) % 1;
+    dom.playerProgressBar.style.width = `${Math.round(playerProgress * 100)}%`;
+  }
+
+  context.clearRect(0, 0, width, height);
+  const gradient = context.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, "rgba(47, 143, 130, 0.9)");
+  gradient.addColorStop(0.48, "rgba(242, 184, 75, 0.82)");
+  gradient.addColorStop(1, "rgba(242, 111, 94, 0.72)");
+  context.fillStyle = "rgba(255, 253, 246, 0.045)";
+  for (let x = 0; x < width; x += 34) {
+    context.fillRect(x, 0, 1, height);
+  }
+  context.strokeStyle = gradient;
+  context.lineWidth = 7;
+  context.lineCap = "round";
+  for (let line = 0; line < 3; line += 1) {
+    context.beginPath();
+    const amp = (track.energyTarget * 3.6 + line * 9) * (audio.playing ? 1 : 0.38);
+    const baseY = height * (0.32 + line * 0.2);
+    for (let x = 0; x <= width; x += 10) {
+      const y = baseY + Math.sin(x / 42 + time * (line + 1.4)) * amp;
+      if (x === 0) {
+        context.moveTo(x, y);
+      } else {
+        context.lineTo(x, y);
+      }
+    }
+    context.globalAlpha = 0.88 - line * 0.2;
+    context.stroke();
+  }
+  context.globalAlpha = 1;
+  context.fillStyle = "rgba(255, 253, 246, 0.72)";
+  for (let bar = 0; bar < 18; bar += 1) {
+    const barHeight = 12 + Math.abs(Math.sin(time * 2 + bar)) * track.energyTarget * 4;
+    context.fillRect(28 + bar * 34, height - 28 - barHeight, 8, barHeight);
+  }
+  playerAnimationId = window.requestAnimationFrame(drawPlayerVisualizer);
+}
+
+function addMoxieMessage(role, text) {
+  const message = document.createElement("p");
+  message.className = `moxie-message is-${role}`;
+  message.textContent = text;
+  dom.moxieMessages.prepend(message);
+  while (dom.moxieMessages.children.length > 5) {
+    dom.moxieMessages.lastElementChild.remove();
+  }
+}
+
+function getMoxieReply(intent, input = "") {
+  const nextStep = currentSteps[currentStepIndex] || "make the task visible";
+  const state = currentPulse ? currentPulse.state : selectedState;
+  const taskText = input || (currentPulse && currentPulse.taskText) || dom.taskInput.value.trim() || "the sticky thing";
+  const lower = taskText.toLowerCase();
+  const hasAnxiety = /anxious|anxiety|panic|worried|overwhelmed|spiral|stress/.test(lower);
+  const hasProcrastination = /avoid|avoiding|procrastinat|stuck|can't start|cant start|later|putting off/.test(lower);
+  const hasADHD = /adhd|add|distract|executive|focus|scattered|restless|drift/.test(lower);
+  const tasks = extractTasks(taskText);
+  const replies = {
+    pulse: `Moxie: ${state} noted. Put your attention on this only: ${nextStep}.`,
+    smaller: `Moxie: Shrink "${taskText}" until it is almost silly. Next move: ${nextStep}.`,
+    restart: `Moxie: Restart lane open. Look at the last visible step, touch the workspace, then do 30 seconds.`,
+    calm: hasAnxiety
+      ? "Moxie: Anxiety mode. Exhale, lower the stakes, and choose the task that reduces the most pressure in the next 10 minutes."
+      : "Moxie: Pressure down. Slow pulse, fewer prompts, one visible action.",
+    plan: buildMoxiePlan(tasks, taskText),
+    triage: buildMoxieTriage(tasks, taskText),
+    unstick: hasProcrastination
+      ? `Moxie: Procrastination usually means the entry point is too vague, too big, or too emotionally expensive. Open with this: ${nextStep}.`
+      : `Moxie: Find the sticky edge. Is it unclear, boring, scary, or too large? Then do: ${nextStep}.`,
+    custom: buildMoxieCustomReply({ taskText, tasks, hasADHD, hasAnxiety, hasProcrastination, nextStep }),
+  };
+  return replies[intent] || replies.custom;
+}
+
+function extractTasks(text) {
+  return text
+    .split(/\n|,|;|\band\b|\bthen\b|\balso\b/i)
+    .map((item) => item.replace(/^i need to\s+/i, "").replace(/^need to\s+/i, "").trim())
+    .filter((item) => item.length > 2)
+    .slice(0, 8);
+}
+
+function scoreTaskPriority(task) {
+  const lower = task.toLowerCase();
+  let score = 0;
+  if (/today|tonight|urgent|deadline|due|late|now/.test(lower)) score += 5;
+  if (/email|call|submit|pay|send|book|appointment|form/.test(lower)) score += 3;
+  if (/clean|laundry|dishes|trash|room/.test(lower)) score += 2;
+  if (/finish|start|fix|study|write|code/.test(lower)) score += 2;
+  if (/tiny|quick|small|5 min|five/.test(lower)) score += 1;
+  return score;
+}
+
+function prioritizeTasks(tasks, fallback) {
+  const usable = tasks.length ? tasks : [fallback];
+  return usable
+    .map((task) => ({ task, score: scoreTaskPriority(task) }))
+    .sort((a, b) => b.score - a.score)
+    .map((item) => item.task);
+}
+
+function buildMoxiePlan(tasks, fallback) {
+  const prioritized = prioritizeTasks(tasks, fallback);
+  const first = prioritized[0] || "make the task visible";
+  const second = prioritized[1] || "capture the next restart point";
+  const third = prioritized[2] || "stop before burnout";
+  return `Moxie plan: 1. Start with "${first}" for 7 minutes. 2. Do only the next visible piece of "${second}". 3. Park "${third}" as the restart cue.`;
+}
+
+function buildMoxieTriage(tasks, fallback) {
+  const prioritized = prioritizeTasks(tasks, fallback);
+  const pressure = prioritized[0] || fallback;
+  const quick = prioritized.find((task) => /email|call|pay|send|trash|dishes|quick|small/i.test(task)) || prioritized[1] || pressure;
+  return `Moxie triage: pressure first is "${pressure}". Quick win is "${quick}". If both feel sticky, do 30 seconds of setup, not the whole task.`;
+}
+
+function buildMoxieCustomReply({ taskText, tasks, hasADHD, hasAnxiety, hasProcrastination, nextStep }) {
+  if (tasks.length > 1) {
+    return buildMoxieTriage(tasks, taskText);
+  }
+  if (hasAnxiety) {
+    return `Moxie: Anxiety wants certainty before action. We will use a tiny reversible step: ${nextStep}.`;
+  }
+  if (hasProcrastination) {
+    return `Moxie: This is an initiation problem, not a character problem. Make the task visible, then do: ${nextStep}.`;
+  }
+  if (hasADHD) {
+    return `Moxie: ADHD-friendly path: externalize it, shrink it, add a cue, then restart fast. First cue: ${nextStep}.`;
+  }
+  return `Moxie: I hear "${taskText}". Want a plan, triage, calm, or an unstick move?`;
+}
+
+function handleMoxieChoice(event) {
+  const intent = event.currentTarget.dataset.moxie;
+  addMoxieMessage("coach", getMoxieReply(intent));
+  if (intent === "smaller") {
+    shuffleSteps();
+  }
+  if (intent === "restart") {
+    driftReset();
+  }
+  if (intent === "calm") {
+    setPlayerPhase("Cooldown");
+  }
+  if (intent === "plan" || intent === "triage") {
+    const tasks = extractTasks(dom.taskInput.value || (currentPulse && currentPulse.taskText) || "");
+    const prioritized = prioritizeTasks(tasks, dom.taskInput.value || "Start the task");
+    if (prioritized.length) {
+      currentSteps = fractureTask(prioritized[0], selectedTask, selectedState);
+      currentStepIndex = 0;
+      syncChecklistFromSteps(true);
+      renderSteps();
+    }
+  }
+  if (intent === "unstick") {
+    shuffleSteps();
   }
 }
 
@@ -1034,36 +1654,31 @@ function setupAudio() {
 }
 
 function toggleSound() {
-  setupAudio();
-  if (!audio.context) {
-    return;
-  }
-  if (audio.context.state === "suspended") {
-    audio.context.resume();
-  }
-  audio.playing = !audio.playing;
-  audio.master.gain.setTargetAtTime(audio.playing ? 0.05 : 0.0001, audio.context.currentTime, 0.03);
-  dom.soundButton.classList.toggle("is-on", audio.playing);
-  applyAudioSettings();
+  setAudioPlaying(!audio.playing);
 }
 
 function applyAudioSettings() {
-  if (!audio.context || !currentPulse) {
+  if (!audio.context) {
     return;
   }
-  const base = currentPulse.tempo;
+  const track = playerTracks[playerIndex];
+  const base = currentPulse ? currentPulse.tempo : track ? track.bpmTarget : 78;
   const progressLift = session.completedSteps * 8;
   const driftDrop = session.phase === "Drift recovery" ? -18 : 0;
+  const intensity = Number(dom.playerIntensityRange.value || 6);
   const phaseMap = {
     Ignition: 1.28,
     "Lock-in": 1,
     "Drift recovery": 0.82,
+    "Drift Recovery": 0.82,
+    Reward: 1.35,
     Cooldown: 0.64,
+    "Deadline Mode": 1.22,
   };
   const multiplier = phaseMap[session.phase] || 1;
-  const a = 90 + base * multiplier + progressLift + driftDrop;
+  const a = 90 + base * multiplier + progressLift + driftDrop + intensity * 2;
   const b = a * 1.5;
-  const filter = session.phase === "Lock-in" ? 420 : 620 + session.completedSteps * 70;
+  const filter = session.phase === "Lock-in" ? 420 : 560 + intensity * 50 + session.completedSteps * 70;
   const now = audio.context.currentTime;
   audio.oscA.frequency.setTargetAtTime(a, now, 0.18);
   audio.oscB.frequency.setTargetAtTime(b, now, 0.18);
@@ -1128,9 +1743,44 @@ function bindEvents() {
   dom.startTimerButton.addEventListener("click", startTimer);
   dom.resetTimerButton.addEventListener("click", resetTimer);
   dom.soundButton.addEventListener("click", toggleSound);
+  dom.playerPlayButton.addEventListener("click", toggleSound);
+  dom.playerPrevButton.addEventListener("click", previousPlayerTrack);
+  dom.playerNextButton.addEventListener("click", nextPlayerTrack);
+  dom.playerPhaseSelect.addEventListener("change", () => setPlayerPhase(dom.playerPhaseSelect.value));
+  dom.playerIntensityRange.addEventListener("input", applyAudioSettings);
   dom.driftButton.addEventListener("click", driftReset);
   dom.completeStepButton.addEventListener("click", completeVisibleStep);
   dom.shuffleStepsButton.addEventListener("click", shuffleSteps);
+  dom.checklistForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    addChecklistItem(dom.checklistInput.value);
+    dom.checklistInput.value = "";
+  });
+  dom.checklistSyncButton.addEventListener("click", () => syncChecklistFromSteps(false));
+  dom.checklistClearButton.addEventListener("click", clearDoneChecklistItems);
+  dom.moxieForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+  const value = dom.moxieInput.value.trim();
+    if (!value) {
+      return;
+    }
+    addMoxieMessage("user", value);
+    const tasks = extractTasks(value);
+    if (tasks.length > 1) {
+      const prioritized = prioritizeTasks(tasks, value);
+      checklistItems = prioritized.map((task) => makeChecklistItem(task));
+      currentSteps = fractureTask(prioritized[0], selectedTask, selectedState);
+      currentStepIndex = 0;
+      persistChecklist();
+      renderChecklist();
+      renderSteps();
+    }
+    addMoxieMessage("coach", getMoxieReply("custom", value));
+    dom.moxieInput.value = "";
+  });
+  document.querySelectorAll("[data-moxie]").forEach((button) => {
+    button.addEventListener("click", handleMoxieChoice);
+  });
   dom.roomSelect.addEventListener("change", () => {
     currentRoom = dom.roomSelect.value;
     updateRoomCount();
@@ -1146,6 +1796,10 @@ function bindEvents() {
   document.querySelectorAll("[data-coach]").forEach((button) => {
     button.addEventListener("click", handleCoachChoice);
   });
+  dom.toneModeSelect.addEventListener("change", renderTonePreview);
+  dom.toneFeelingSelect.addEventListener("change", renderTonePreview);
+  dom.previewToneButton.addEventListener("click", renderTonePreview);
+  dom.exportToneButton.addEventListener("click", exportToneAtlas);
   dom.openDataButton.addEventListener("click", openDatabaseDialog);
   dom.closeDataButton.addEventListener("click", () => dom.dataDialog.close());
   dom.exportDataButton.addEventListener("click", exportDatabase);
@@ -1155,13 +1809,22 @@ function bindEvents() {
 function init() {
   renderOptions();
   renderRooms();
+  renderToneControls();
   bindEvents();
   renderAuthState();
   renderFingerprint();
   previewPulse();
   currentSteps = fractureTask("Start one visible piece", selectedTask, selectedState);
+  if (!checklistItems.length) {
+    checklistItems = currentSteps.map((step) => makeChecklistItem(step));
+  }
   renderSteps();
+  renderChecklist();
+  buildPlayerQueue();
+  renderPlayer();
   renderTimer();
+  addMoxieMessage("coach", "Moxie: Name the sticky bit. I will turn it into a tiny next move.");
+  drawPlayerVisualizer();
 }
 
 init();
